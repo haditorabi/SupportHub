@@ -1601,6 +1601,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "Microsoft.EntityFrameworkCore": "8.0.5",
           "SupportHub.Domain": "1.0.0"
         },
         "compile": {
