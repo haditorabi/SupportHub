@@ -7,7 +7,7 @@ namespace SupportHub.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class TicketsController : ControllerBase
+public class TicketsController: ControllerBase
 {
     private readonly AppDbContext _db;
     public TicketsController(AppDbContext db) => _db = db;

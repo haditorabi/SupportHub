@@ -7,7 +7,7 @@ namespace SupportHub.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class CommentsController : ControllerBase
+public class CommentsController: ControllerBase
 {
     private readonly AppDbContext _db;
     public CommentsController(AppDbContext db) => _db = db;

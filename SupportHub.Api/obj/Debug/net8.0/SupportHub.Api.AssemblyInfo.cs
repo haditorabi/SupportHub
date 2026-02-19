@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SupportHub.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f673fee8ff05aeb313a1a5cbbba5ddebc9a5640f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93c81aef58d47f55728b311c84a250782b02d63e")]
 [assembly: System.Reflection.AssemblyProductAttribute("SupportHub.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SupportHub.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
