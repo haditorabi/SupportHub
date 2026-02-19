@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SupportHub.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9c089d8a5bd9118ba4613b03157de8cbfd64a817")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d20ca6ca3d2f1c43273039d185d3c31ad9906e01")]
 [assembly: System.Reflection.AssemblyProductAttribute("SupportHub.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SupportHub.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
