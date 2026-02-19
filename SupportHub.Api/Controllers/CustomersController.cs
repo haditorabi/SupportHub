@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SupportHub.Application.Interfaces;
 using SupportHub.Domain.Entities;
-using SupportHub.Infrastructure.Persistence;
 
 namespace SupportHub.Api.Controllers;
 
@@ -9,62 +8,57 @@ namespace SupportHub.Api.Controllers;
 [Route("api/v1/[controller]")]
 public class CustomersController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public CustomersController(AppDbContext db) => _db = db;
+    private readonly ICustomerService _customerService;
+    private readonly ILogger<CustomersController> _logger;
 
-    // GET api/v1/customers
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public CustomersController(ICustomerService customerService, ILogger<CustomersController> logger)
     {
-        var customers = await _db.Customers
-            .Include(c => c.Tickets)
-            .ToListAsync();
-        return Ok(customers);
+        _customerService = customerService;
+        _logger = logger;
     }
 
-    // GET api/v1/customers/5
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var customer = await _db.Customers
-            .Include(c => c.Tickets)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        return customer is null ? NotFound() : Ok(customer);
-    }
-
-    // POST api/v1/customers
     [HttpPost]
     public async Task<IActionResult> Create(Customer customer)
     {
-        customer.CreatedAt = DateTime.UtcNow;
-        _db.Customers.Add(customer);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = customer.Id }, customer);
+        var result = await _customerService.CreateAsync(customer);
+        if (!result.Success)
+        {
+            _logger.LogWarning("Failed to create customer: {Error}", result.Error);
+            return BadRequest(result.Error);
+        }
+        return CreatedAtAction(nameof(GetById), new { id = result.Data!.Id }, result.Data);
     }
 
-    // PUT api/v1/customers/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Customer updated)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
     {
-        var customer = await _db.Customers.FindAsync(id);
-        if (customer is null) return NotFound();
-
-        customer.Name = updated.Name;
-        customer.Email = updated.Email;
-        await _db.SaveChangesAsync();
-        return Ok(customer);
+        var result = await _customerService.GetByIdAsync(id);
+        return result.Success ? Ok(result.Data) : NotFound(result.Error);
     }
 
-    // DELETE api/v1/customers/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, Customer customer)
+    {
+        var result = await _customerService.UpdateAsync(id, customer);
+        if (!result.Success)
+        {
+            _logger.LogWarning("Failed to update customer {CustomerId}: {Error}", id, result.Error);
+            return BadRequest(result.Error);
+        }
+        return Ok(result.Data);
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var customer = await _db.Customers.FindAsync(id);
-        if (customer is null) return NotFound();
+        var result = await _customerService.DeleteAsync(id);
+        return result.Success ? NoContent() : NotFound(result.Error);
+    }
 
-        _db.Customers.Remove(customer);
-        await _db.SaveChangesAsync();
-        return NoContent();
+    [HttpGet("{id}/tickets")]
+    public async Task<IActionResult> GetTickets(int id)
+    {
+        var result = await _customerService.GetTicketsForCustomerAsync(id);
+        return result.Success ? Ok(result.Data) : NotFound(result.Error);
     }
 }

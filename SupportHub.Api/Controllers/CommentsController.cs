@@ -1,70 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SupportHub.Application.Interfaces;
 using SupportHub.Domain.Entities;
-using SupportHub.Infrastructure.Persistence;
 
 namespace SupportHub.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class CommentsController: ControllerBase
+public class CommentsController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public CommentsController(AppDbContext db) => _db = db;
+    private readonly ICommentService _commentService;
+    private readonly ILogger<CommentsController> _logger;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public CommentsController(ICommentService commentService, ILogger<CommentsController> logger)
     {
-        var comments = await _db.Comments
-            .Include(c => c.Ticket)
-            .Include(c => c.Agent)
-            .Include(c => c.Customer)
-            .ToListAsync();
-        return Ok(comments);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var comment = await _db.Comments
-            .Include(c => c.Ticket)
-            .Include(c => c.Agent)
-            .Include(c => c.Customer)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        return comment is null ? NotFound() : Ok(comment);
+        _commentService = commentService;
+        _logger = logger;
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(Comment comment)
     {
-        comment.CreatedAt = DateTime.UtcNow;
-        _db.Comments.Add(comment);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = comment.Id }, comment);
+        var result = await _commentService.CreateAsync(comment);
+        if (!result.Success)
+        {
+            _logger.LogWarning("Failed to create comment: {Error}", result.Error);
+            return BadRequest(result.Error);
+        }
+        return CreatedAtAction(nameof(GetById), new { id = result.Data!.Id }, result.Data);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _commentService.GetByIdAsync(id);
+        return result.Success ? Ok(result.Data) : NotFound(result.Error);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Comment updated)
+    public async Task<IActionResult> Update(int id, Comment comment)
     {
-        var comment = await _db.Comments.FindAsync(id);
-        if (comment is null) return NotFound();
-
-        comment.Body = updated.Body;
-        comment.AgentId = updated.AgentId;
-        comment.CustomerId = updated.CustomerId;
-        await _db.SaveChangesAsync();
-        return Ok(comment);
+        var result = await _commentService.UpdateAsync(id, comment);
+        if (!result.Success)
+        {
+            _logger.LogWarning("Failed to update comment {CommentId}: {Error}", id, result.Error);
+            return BadRequest(result.Error);
+        }
+        return Ok(result.Data);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var comment = await _db.Comments.FindAsync(id);
-        if (comment is null) return NotFound();
-
-        _db.Comments.Remove(comment);
-        await _db.SaveChangesAsync();
-        return NoContent();
+        var result = await _commentService.DeleteAsync(id);
+        return result.Success ? NoContent() : NotFound(result.Error);
     }
 }

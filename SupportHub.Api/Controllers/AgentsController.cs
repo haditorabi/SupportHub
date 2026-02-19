@@ -1,65 +1,45 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SupportHub.Application.Interfaces;
 using SupportHub.Domain.Entities;
-using SupportHub.Infrastructure.Persistence;
 
 namespace SupportHub.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class AgentsController: ControllerBase
+public class AgentsController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public AgentsController(AppDbContext db) => _db = db;
+    private readonly IAgentService _agentService;
+    private readonly ILogger<AgentsController> _logger;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public AgentsController(IAgentService agentService, ILogger<AgentsController> logger)
     {
-        var agents = await _db.Agents
-            .Include(a => a.Tickets)
-            .ToListAsync();
-        return Ok(agents);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var agent = await _db.Agents
-            .Include(a => a.Tickets)
-            .FirstOrDefaultAsync(a => a.Id == id);
-
-        return agent is null ? NotFound() : Ok(agent);
+        _agentService = agentService;
+        _logger = logger;
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(Agent agent)
     {
-        agent.CreatedAt = DateTime.UtcNow;
-        _db.Agents.Add(agent);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = agent.Id }, agent);
+        var result = await _agentService.CreateAsync(agent);
+        if (!result.Success)
+        {
+            _logger.LogWarning("Failed to create agent: {Error}", result.Error);
+            return BadRequest(result.Error);
+        }
+        return CreatedAtAction(nameof(GetById), new { id = result.Data!.Id }, result.Data);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Agent updated)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
     {
-        var agent = await _db.Agents.FindAsync(id);
-        if (agent is null) return NotFound();
-
-        agent.DisplayName = updated.DisplayName;
-        agent.Email = updated.Email;
-        await _db.SaveChangesAsync();
-        return Ok(agent);
+        var result = await _agentService.GetByIdAsync(id);
+        return result.Success ? Ok(result.Data) : NotFound(result.Error);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var agent = await _db.Agents.FindAsync(id);
-        if (agent is null) return NotFound();
-
-        _db.Agents.Remove(agent);
-        await _db.SaveChangesAsync();
-        return NoContent();
+        var result = await _agentService.DeleteAsync(id);
+        return result.Success ? NoContent() : NotFound(result.Error);
     }
 }
