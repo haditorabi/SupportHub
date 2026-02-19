@@ -107,6 +107,42 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "SupportHub.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "SupportHub.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SupportHub.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SupportHub.Application.dll": {}
+        }
+      },
+      "SupportHub.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/SupportHub.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SupportHub.Domain.dll": {}
+        }
+      },
+      "SupportHub.Infrastructure.Persistence/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "SupportHub.Application": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SupportHub.Infrastructure.Persistence.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SupportHub.Infrastructure.Persistence.dll": {}
+        }
       }
     }
   },
@@ -473,11 +509,28 @@
         "swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512",
         "swashbuckle.aspnetcore.swaggerui.nuspec"
       ]
+    },
+    "SupportHub.Application/1.0.0": {
+      "type": "project",
+      "path": "../SupportHub.Application/SupportHub.Application.csproj",
+      "msbuildProject": "../SupportHub.Application/SupportHub.Application.csproj"
+    },
+    "SupportHub.Domain/1.0.0": {
+      "type": "project",
+      "path": "../SupportHub.Domain/SupportHub.Domain.csproj",
+      "msbuildProject": "../SupportHub.Domain/SupportHub.Domain.csproj"
+    },
+    "SupportHub.Infrastructure.Persistence/1.0.0": {
+      "type": "project",
+      "path": "../SupportHub.Infrastructure.Persistence/SupportHub.Infrastructure.Persistence.csproj",
+      "msbuildProject": "../SupportHub.Infrastructure.Persistence/SupportHub.Infrastructure.Persistence.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
       "Microsoft.AspNetCore.OpenApi >= 8.0.22",
+      "SupportHub.Application >= 1.0.0",
+      "SupportHub.Infrastructure.Persistence >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.6.2"
     ]
   },
@@ -505,7 +558,14 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/Users/haditorabi/Sites/localhost/SupportHub/SupportHub.Application/SupportHub.Application.csproj": {
+              "projectPath": "/Users/haditorabi/Sites/localhost/SupportHub/SupportHub.Application/SupportHub.Application.csproj"
+            },
+            "/Users/haditorabi/Sites/localhost/SupportHub/SupportHub.Infrastructure.Persistence/SupportHub.Infrastructure.Persistence.csproj": {
+              "projectPath": "/Users/haditorabi/Sites/localhost/SupportHub/SupportHub.Infrastructure.Persistence/SupportHub.Infrastructure.Persistence.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
