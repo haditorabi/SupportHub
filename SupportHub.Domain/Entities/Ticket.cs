@@ -8,7 +8,7 @@ public class Ticket
 
     // FK - Customer (required)
     public int CustomerId { get; set; }
-    public Customer Customer { get; set; } = null!;
+    public Customer? Customer { get; set; } = null!;
 
     // FK - Agent (optional/nullable)
     public int? AssignedAgentId { get; set; }

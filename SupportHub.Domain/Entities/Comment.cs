@@ -6,7 +6,7 @@ public class Comment
 
     // FK - Ticket (required)
     public int TicketId { get; set; }
-    public Ticket Ticket { get; set; } = null!;
+    public Ticket? Ticket { get; set; } = null!;
 
     // FK - Agent (nullable - one of these two will be set)
     public int? AgentId { get; set; }
