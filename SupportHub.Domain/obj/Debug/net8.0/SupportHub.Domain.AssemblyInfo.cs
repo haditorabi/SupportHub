@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SupportHub.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+157ea75598b9051f3eed85e9327cd2f1010c92ee")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+432505063e0b242317cb9458fdbd5986bfeb26be")]
 [assembly: System.Reflection.AssemblyProductAttribute("SupportHub.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SupportHub.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
